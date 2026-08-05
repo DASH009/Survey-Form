@@ -1,0 +1,245 @@
+:root {
+    --bg-color: #0c0a09;
+    --card-bg: #141210;
+    --card-hover: #1c1917;
+    --text-primary: #f5f5f4;
+    --text-secondary: #a8a29e;
+    --border-color: #292524;
+    --border-focus: #d97706;
+    --accent-glow: #d97706;
+    --input-bg: #1c1917;
+    --button-bg: #f5f5f4;
+    --button-text: #0c0a09;
+    --button-hover: #e7e5e4;
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="light"] {
+    --bg-color: #fafaf9;
+    --card-bg: #ffffff;
+    --card-hover: #f5f5f4;
+    --text-primary: #1c1917;
+    --text-secondary: #57534e;
+    --border-color: #e7e5e4;
+    --border-focus: #b45309;
+    --accent-glow: #b45309;
+    --input-bg: #f5f5f4;
+    --button-bg: #1c1917;
+    --button-text: #fafaf9;
+    --button-hover: #292524;
+    --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background 0.4s ease, color 0.4s ease;
+}
+
+.container {
+    width: 100%;
+    max-width: 700px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 50px;
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    transition: all 0.4s ease;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 24px;
+}
+
+#app-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+}
+
+.theme-toggle {
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 2px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.theme-toggle:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+.hidden { display: none !important; }
+
+.lang-screen {
+    text-align: left;
+    padding: 20px 0;
+}
+
+.lang-screen h3 {
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+}
+
+.lang-screen p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 40px;
+}
+
+.lang-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.lang-card {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 30px 24px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.lang-card:hover {
+    border-color: var(--border-focus);
+    background: var(--card-hover);
+    transform: translateY(-2px);
+}
+
+.lang-card h3 {
+    margin: 0 0 6px 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.lang-card span {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+input[type="text"], select, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus, select:focus, textarea:focus {
+    border-color: var(--border-focus);
+}
+
+select option {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+textarea { resize: vertical; height: 110px; }
+
+.submit-btn, .action-btn {
+    background: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 16px;
+    width: 100%;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: background 0.2s ease;
+}
+.submit-btn:hover, .action-btn:hover {
+    background: var(--button-hover);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 40px;
+    border-radius: 4px;
+    width: 90%;
+    max-width: 420px;
+    text-align: left;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+}
+.modal-box h3 {
+    margin-top: 0;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+}
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+}
+.modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 2px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.btn-back { background: transparent; color: var(--text-primary); }
+.btn-back:hover { border-color: var(--text-primary); }
+.btn-proceed { background: var(--button-bg); color: var(--button-text); border: none; }

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future & Career Intelligence Initiative</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        #modal-title { color: #ef4444; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-flex">
+            <div>
+                <h2 id="app-title">Future & Career Intelligence</h2>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+        </div>
+
+        <!-- SCREEN 1: LANGUAGE SELECTION -->
+        <div id="screen-lang" class="lang-screen">
+            <h3 id="intro-main-title">Your thoughts to build a better</h3>
+            <p id="intro-sub-title">Your answers are valuable for us. Be the part of changemaker</p>
+            
+            <p style="font-weight: 500; margin-bottom: 15px; font-size: 14px; color: var(--text-secondary); text-transform: uppercase;">Select your preferred language / भाषा चुनें</p>
+            
+            <div class="lang-grid">
+                <div class="lang-card" onclick="setLanguage('en')">
+                    <h3>English</h3>
+                    <span>Continue in English</span>
+                </div>
+                <div class="lang-card" onclick="setLanguage('hi')">
+                    <h3>हिंदी</h3>
+                    <span>हिंदी में जारी रखें</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: SURVEY FORM -->
+        <div id="screen-form" class="hidden">
+            <div style="margin-bottom: 30px;">
+                <h2 id="form-main-title" style="margin: 0 0 6px 0; font-size: 24px; font-weight: 500;"></h2>
+                <h3 id="form-alt-title" style="margin: 0 0 10px 0; font-size: 16px; color: var(--border-focus); font-weight: 500;"></h3>
+                <p id="survey-desc" style="color: var(--text-secondary); font-size: 15px; margin: 0; line-height: 1.5;"></p>
+                <p id="survey-desc-alt" style="color: var(--text-secondary); font-size: 15px; margin: 4px 0 0 0; line-height: 1.5;"></p>
+            </div>
+            
+            <form id="surveyForm" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label id="lbl-name"></label>
+                    <input type="text" id="userName" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label id="lbl-gmail"></label>
+                    <input type="text" id="userGmail" placeholder="name@example.com">
+                </div>
+
+                <div class="form-group"><label id="q1-label"></label><select id="q1"></select></div>
+                <div class="form-group"><label id="q2-label"></label><select id="q2"></select></div>
+                <div class="form-group"><label id="q3-label"></label><select id="q3"></select></div>
+                <div class="form-group"><label id="q4-label"></label><select id="q4"></select></div>
+                <div class="form-group"><label id="q5-label"></label><select id="q5"></select></div>
+                <div class="form-group"><label id="q6-label"></label><select id="q6"></select></div>
+                <div class="form-group"><label id="q7-label"></label><select id="q7"></select></div>
+                <div class="form-group"><label id="q8-label"></label><select id="q8"></select></div>
+                <div class="form-group"><label id="q9-label"></label><select id="q9"></select></div>
+                <div class="form-group"><label id="q10-label"></label><select id="q10"></select></div>
+                <div class="form-group"><label id="q11-label"></label><select id="q11"></select></div>
+                <div class="form-group"><label id="q12-label"></label><select id="q12"></select></div>
+                <div class="form-group"><label id="q13-label"></label><select id="q13"></select></div>
+                
+                <!-- Q14 Container converted to Cards -->
+                <div class="form-group">
+                    <label id="q14-label"></label>
+                    <div id="q14-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;"></div>
+                </div>
+
+                <div class="form-group"><label id="q15-label"></label><select id="q15"></select></div>
+                <div class="form-group"><label id="q16-label"></label><textarea id="q16" placeholder="Share your thoughts..."></textarea></div>
+
+                <button type="submit" class="submit-btn" id="submit-btn-text">Submit Survey</button>
+            </form>
+        </div>
+
+        <!-- SCREEN 3: SUCCESS -->
+        <div id="screen-success" class="hidden" style="text-align: center; padding: 40px 0;">
+            <h3 id="success-msg" style="color: var(--text-primary); font-size: 24px; font-weight: 500; margin-bottom: 12px;"></h3>
+            <p id="success-sub-msg" style="color: var(--text-secondary); font-size: 16px; line-height: 1.6; margin-bottom: 35px;"></p>
+            <button class="action-btn" onclick="resetSurvey()" id="restart-btn-text" style="max-width: 250px; margin: 0 auto;">Start New Survey</button>
+        </div>
+    </div>
+
+    <!-- POPUP MODAL CARD -->
+    <div id="modal-popup" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 id="modal-title"></h3>
+            <p id="modal-desc" style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 25px;"></p>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-back" id="modal-btn-back" onclick="closeModal()">Go Back</button>
+                <button class="modal-btn btn-proceed" id="modal-btn-proceed" onclick="confirmSubmit()" style="display:none;">Yes, Submit Anyway</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+        let isForcedSubmit = false;
+
+        const data = {
+            en: {
+                appTitle: "Future & Career Intelligence",
+                mainTitle: "Your voice, Our Mission: Build Something Great",
+                altTitle: "Be a part of Trust, Innovation, Education",
+                desc: "Your choices today will change the way students learn tomorrow.",
+                descAlt: "Your answers are valuable. Help us make a real difference in the education.",
+                name: "Your Name",
+                gmail: "Gmail ID (Optional)",
+                submit: "Submit Survey",
+                successMain: "Thank you! Your voice/choice really matter for us.",
+                successSub: "Thank you for your valuable time and be a part of changemaker.",
+                restart: "Start New Survey",
+                defaultOption: "Choose one option...",
+                missingTitle: "⚠️ Missing Fields",
+                missingDesc: "Oops! Please answer all questions before submitting. Your voice matters!",
+                optTitle: "🚀 Wait! Don't miss out on your growth",
+                optDesc: "You left the Gmail ID or optional feedback blank. Sharing this helps us connect you with exclusive career opportunities. Are you sure you want to skip?",
+                backBtn: "Go Back & Fill",
+                proceedBtn: "Yes, Submit Anyway",
+                questions: [
+                    { label: "1. What is your current education level?", options: ["Class 9–10 student", "Class 11–12 student", "Diploma student", "Undergraduate student (Bachelor's)", "Master's student", "Completed degree and looking for a job", "Other"] },
+                    { label: "2. What is your current status?", options: ["Student studying full-time", "Student preparing for competitive exams", "Looking for internship", "Looking for first job", "Working but searching for better opportunities", "Currently unemployed", "Other"] },
+                    { label: "3. Which field are you currently studying or interested in?", options: ["Technology / IT / Software", "Business / Management", "Engineering", "Science / Research", "Commerce / Finance", "Arts / Humanities / Healthcare", "Only Government Jobs", "Other"] },
+                    { label: "4. What is your biggest challenge while preparing for your career?", options: ["Lack of practical skills", "Lack of career guidance", "Lack of experience", "Lack of good education resources", "Not knowing what skills companies need", "Financial limitations", "Lack of confidence/interview skills"] },
+                    { label: "5. Do you feel your current education is enough to get a job?", options: ["Yes, completely", "No, education alone is not enough", "I am unsure", "I am confused", "Other"] },
+                    { label: "6. What is the biggest gap between education and employment according to you?", options: ["Colleges teach theory, not practical skills", "Skills taught are outdated", "Lack of industry exposure", "Lack of networking opportunities / internships/projects", "No major gap", "Other"] },
+                    { label: "7. How confident are you about getting a job after completing your education?", options: ["Very confident", "Somewhat confident", "Neutral", "Not confident", "Very worried"] },
+                    { label: "8. What do you think is more important for getting a job?", options: ["Degree/qualification/ Certifications", "Practical skills", "Work experience", "Networking and connections", "Combination of all", "I don’t know"] },
+                    { label: "9. What learning format do you prefer?", options: ["Offline classroom learning", "Online live classes", "Recorded courses", "Hybrid (online + offline)", "Learning through work on projects"] },
+                    { label: "10. How much time can you dedicate to skill development?", options: ["5–10 hours/week", "10–15 hours/week", "15–25 hours/week", "More than 25 hours/week", "I don’t know"] },
+                    { label: "11. What duration of a career development program would you prefer?", options: ["6 months – 1 year", "2 years", "3 years", "I don’t know", "Other"] },
+                    { label: "12. How much can you invest in learning/improving your career skills?", options: ["Free only", "₹10,000–₹50,000", "₹50,000–₹1,00,000", "₹1,00,000–₹3,00,000", "+3,00,000"] },
+                    { label: "13. What payment model would you prefer?", options: ["One-time payment", "Monthly payment plan", "Pay after getting a job", "other"] },
+                    { label: "14. When deciding to join a job-oriented or skill-building institute, what is your top priority?", options: ["Guaranteed job opportunities", "Quality education / High price", "Industry mentors", "Internship opportunities", "Only Affordable (Low) price", "Quality education / High price / industry experts / guaranteed job / No job 50% fees return / World-class library / Workshops / live project experience / guaranteed internship / CV to Job Interview preparation support / other benefits"] },
+                    { label: "15. If an institute offered you a complete journey (skills + projects + 100% internship + 100% job support), how interested would you be?", options: ["A) 100% Interested", "B) 0% or Not Interested"] },
+                    { label: "16. What is the biggest problem you are facing today related to education, skills, or getting a job? (Optional)" }
+                ]
+            },
+            hi: {
+                appTitle: "फ्यूचर और करियर इंटेलिजेंस",
+                mainTitle: "आपकी आवाज़, हमारा मिशन: कुछ महान बनाएँ",
+                altTitle: "विश्वास, नवाचार और शिक्षा का हिस्सा बनें",
+                desc: "आज आपके द्वारा लिए गए विकल्प कल छात्रों के सीखने के तरीके को बदल देंगे।",
+                descAlt: "आपके उत्तर बहुमूल्य हैं। शिक्षा में वास्तविक बदलाव लाने में हमारी मदद करें।",
+                name: "आपका नाम",
+                gmail: "जीमेल आईडी (वैकल्पिक)",
+                submit: "सर्वेक्षण जमा करें",
+                successMain: "धन्यवाद! आपकी आवाज़/पसंद हमारे लिए सचमुच बहुत मायने रखती है।",
+                successSub: "अपने बहुमूल्य समय के लिए धन्यवाद और चेंजमेकर का हिस्सा बनें।",
+                restart: "नया सर्वेक्षण शुरू करें",
+                defaultOption: "एक विकल्प चुनें...",
+                missingTitle: "⚠️ अधूरे प्रश्न",
+                missingDesc: "उफ़! कृपया सबमिट करने से पहले सभी प्रश्नों के उत्तर दें। आपकी आवाज़ महत्वपूर्ण है!",
+                optTitle: "🚀 रुकिए! अपने विकास से न चूकें",
+                optDesc: "आपने जीमेल आईडी या अंतिम फीडबैक विकल्प को खाली छोड़ दिया है। इसे साझा करने से हम आपको विशेष करियर अवसरों से जोड़ सकते हैं। क्या आप वाकई आगे बढ़ना चाहते हैं?",
+                backBtn: "वापस जाएं और भरें",
+                proceedBtn: "हाँ, ऐसे ही सबमिट करें",
+                questions: [
+                    { label: "1. आपकी वर्तमान शिक्षा स्तर क्या है?", options: ["कक्षा 9–10 छात्र", "कक्षा 11–12 छात्र", "डिपॉजिट छात्र", "अंडरग्रेजुएट छात्र (स्नातक)", "मास्टर छात्र", "डिग्री पूरी कर ली है और नौकरी की तलाश में हूँ", "अन्य"] },
+                    { label: "2. आपकी वर्तमान स्थिति क्या है?", options: ["पूर्णकालिक अध्ययनरत छात्र", "प्रतियोगिता परीक्षाओं की तैयारी करने वाला छात्र", "इंटर्नशिप की तलाश में", "पहली नौकरी की तलाश में", "काम कर रहे हैं लेकिन बेहतर अवसरों की तलाश में", "वर्तमान में बेरोजगार", "अन्य"] },
+                    { label: "3. आप वर्तमान में किस क्षेत्र का अध्ययन कर रहे हैं या रुचि रखते हैं?", options: ["प्रौद्योगिकी / आईटी / सॉफ्टवेयर", "व्यवसाय / प्रबंधन", "इंजीनियरिंग", "विज्ञान / अनुसंधान", "वाणिज्य / वित्त", "कला / मानविकी / स्वास्थ्य देखभाल", "केवल सरकारी नौकरियां", "अन्य"] },
+                    { label: "4. अपने करियर की तैयारी करते समय आपकी सबसे बड़ी चुनौती क्या है?", options: ["व्यावहारिक कौशल की कमी", "करियर मार्गदर्शन की कमी", "अनुभव की कमी", "अच्छे शिक्षा संसाधनों की कमी", "यह न जानना कि कंपनियों को किन कौशलों की आवश्यकता है", "वित्तीय सीमाएं", "आत्मविश्वास / साक्षात्कार कौशल की कमी"] },
+                    { label: "5. क्या आपको लगता है कि आपकी वर्तमान शिक्षा नौकरी पाने के लिए पर्याप्त है?", options: ["हाँ, पूरी तरह से", "नहीं, केवल शिक्षा पर्याप्त नहीं है", "मैं अनिश्चित हूँ", "मैं भ्रमित हूँ", "अन्य"] },
+                    { label: "6. आपके अनुसार शिक्षा और रोजगार के बीच सबसे बड़ा अंतर क्या है?", options: ["कॉलेज सिद्धांत सिखाते हैं, व्यावहारिक कौशल नहीं", "सिखाए गए कौशल पुराने हो चुके हैं", "उद्योग के संपर्क की कमी", "नेटवर्क के अवसर / इंटर्नशिप / प्रोजेक्ट्स की कमी", "कोई बड़ा अंतर नहीं", "अन्य"] },
+                    { label: "7. अपनी शिक्षा पूरी करने के बाद नौकरी मिलने को लेकर आप कितने आश्वस्त हैं?", options: ["बहुत आश्वस्त", "कुछ हद तक आश्वस्त", "तटस्थ (Neutral)", "आश्वस्त नहीं", "बहुत चिंतित"] },
+                    { label: "8. नौकरी पाने के लिए आपके अनुसार क्या अधिक महत्वपूर्ण है?", options: ["डिग्री / योग्यता / प्रमाण पत्र", "व्यावहारिक कौशल (Practical skills)", "कार्य अनुभव (Work experience)", "नेटवर्किंग और कनेक्शन", "सभी का संयोजन", "मुझे नहीं पता"] },
+                    { label: "9. आप किस शिक्षण प्रारूप को पसंद करते हैं?", options: ["ऑफ़लाइन कक्षा शिक्षण", "ऑनलाइन लाइव क्लासेस", "रिकॉर्डेड कोर्स", "हाइब्रिड (ऑनलाइन + ऑफ़लाइन)", "प्रोजेक्ट्स पर काम करके सीखना"] },
+                    { label: "10. आप कौशल विकास के लिए कितना समय समर्पित कर सकते हैं?", options: ["5–10 घंटे/सप्ताह", "10–15 घंटे/सप्ताह", "15–25 घंटे/सप्ताह", "25 घंटे/सप्ताह से अधिक", "मुझे नहीं पता"] },
+                    { label: "11. आप किस अवधि के करियर विकास कार्यक्रम को पसंद करेंगे?", options: ["6 महीने – 1 वर्ष", "2 वर्ष", "3 वर्ष", "मुझे नहीं पता", "अन्य"] },
+                    { label: "12. आप अपने करियर कौशल को सीखने/सुधारने में कितना निवेश कर सकते हैं?", options: ["केवल मुफ्त", "₹10,000–₹50,000", "₹50,000–₹1,00,000", "₹1,00,000–₹3,00,000", "+3,00,000"] },
+                    { label: "13. आप किस भुगतान मॉडल को पसंद करेंगे?", options: ["एकमुश्त भुगतान (One-time payment)", "मासिक भुगतान योजना", "नौकरी मिलने के बाद भुगतान करें", "अन्य"] },
+                    { label: "14. नौकरी-उन्मुख या कौशल-निर्माण संस्थान में शामिल होने का निर्णय लेते समय आपकी सर्वोच्च प्राथमिकता क्या है?", options: ["गारंटीड नौकरी के अवसर", "गुणवत्तापूर्ण शिक्षा / उच्च मूल्य", "उद्योग के मेंटर्स", "इंटर्नशिप के अवसर", "केवल किफायती (कम) कीमत", "गुणवत्तापूर्ण शिक्षा / उद्योग विशेषज्ञ / गारंटीड नौकरी / नौकरी न मिलने पर 50% फीस वापसी / विश्व स्तरीय लाइब्रेरी / कार्यशालाएं / लाइव प्रोजेक्ट अनुभव / गारंटीड इंटर्नशिप / सीवी से जॉब इंटरव्यू तैयारी समर्थन"] },
+                    { label: "15. यदि कोई संस्थान आपको एक संपूर्ण यात्रा प्रदान करे (कौशल + प्रोजेक्ट्स + 100% इंटर्नशिप + 100% नौकरी सहायता), तो आप कितने इच्छुक होंगे?", options: ["A) 100% इच्छुक", "B) 0% या रुचि नहीं है"] },
+                    { label: "16. शिक्षा, कौशल या नौकरी पाने से संबंधित आज आप सबसे बड़ी समस्या कौन सी फेस कर रहे हैं? (वैकल्पिक)" }
+                ]
+            }
+        };
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute("data-theme");
+            html.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById("screen-lang").classList.add("hidden");
+            document.getElementById("screen-form").classList.remove("hidden");
+            
+            const langData = data[lang];
+            document.getElementById("app-title").innerText = langData.appTitle;
+            document.getElementById("form-main-title").innerText = langData.mainTitle;
+            document.getElementById("form-alt-title").innerText = langData.altTitle;
+            document.getElementById("survey-desc").innerText = langData.desc;
+            document.getElementById("survey-desc-alt").innerText = langData.descAlt;
+            document.getElementById("lbl-name").innerText = langData.name;
+            document.getElementById("lbl-gmail").innerText = langData.gmail;
+            document.getElementById("submit-btn-text").innerText = langData.submit;
+
+            langData.questions.forEach((q, index) => {
+                const qNum = index + 1;
+                const labelElem = document.getElementById(`q${qNum}-label`);
+                if(labelElem) labelElem.innerText = q.label;
+
+                if(qNum === 14) {
+                    const container = document.getElementById(`q14-container`);
+                    if(container && q.options) {
+                        container.innerHTML = "";
+                        q.options.forEach((opt) => {
+                            const wrapper = document.createElement('label');
+                            wrapper.style.cssText = "display: flex; align-items: flex-start; gap: 10px; background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 2px; cursor: pointer; font-size: 14px; line-height: 1.4; color: var(--text-primary); transition: border-color 0.2s;";
+                            
+                            const radio = document.createElement('input');
+                            radio.type = 'radio';
+                            radio.name = 'q14_selection';
+                            radio.value = opt;
+                            radio.style.marginTop = "3px";
+
+                            const span = document.createElement('span');
+                            span.innerText = opt;
+
+                            wrapper.appendChild(radio);
+                            wrapper.appendChild(span);
+                            container.appendChild(wrapper);
+                        });
+                    }
+                    return;
+                }
+
+                const selectElem = document.getElementById(`q${qNum}`);
+                if(selectElem && q.options) {
+                    selectElem.innerHTML = "";
+                    const defaultOpt = document.createElement("option");
+                    defaultOpt.value = "";
+                    defaultOpt.innerText = langData.defaultOption;
+                    defaultOpt.disabled = true;
+                    defaultOpt.selected = true;
+                    selectElem.appendChild(defaultOpt);
+
+                    q.options.forEach((opt) => {
+                        const optElem = document.createElement("option");
+                        optElem.value = opt;
+                        optElem.innerText = opt;
+                        selectElem.appendChild(optElem);
+                    });
+                }
+            });
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById("userName").value.trim();
+            const gmail = document.getElementById("userGmail").value.trim();
+            const problem = document.getElementById("q16").value.trim();
+            const langData = data[currentLang];
+
+            const proceedBtn = document.getElementById("modal-btn-proceed");
+            const backBtn = document.getElementById("modal-btn-back");
+
+            let missingFields = [];
+            if (!name) missingFields.push(currentLang === 'en' ? "Your Name" : "आपका नाम");
+
+            for (let i = 1; i <= 15; i++) {
+                if(i === 14) {
+                    const q14Val = document.querySelector('input[name="q14_selection"]:checked');
+                    if(!q14Val) missingFields.push(langData.questions[13].label);
+                    continue;
+                }
+                const val = document.getElementById(`q${i}`).value;
+                if (!val) missingFields.push(langData.questions[i - 1].label);
+            }
+
+            if (missingFields.length > 0) {
+                document.getElementById("modal-title").innerText = langData.missingTitle;
+                document.getElementById("modal-desc").innerText = langData.missingDesc;
+                backBtn.innerText = currentLang === 'en' ? "OK, Let me check" : "ठीक है, देखता हूँ";
+                proceedBtn.style.display = "none";
+                document.getElementById("modal-popup").classList.remove("hidden");
+                return;
+            }
+
+            if (!isForcedSubmit && (!gmail || !problem)) {
+                document.getElementById("modal-title").innerText = langData.optTitle;
+                document.getElementById("modal-desc").innerText = langData.optDesc;
+                backBtn.innerText = langData.backBtn;
+                proceedBtn.innerText = langData.proceedBtn;
+                proceedBtn.style.display = "block";
+                document.getElementById("modal-popup").classList.remove("hidden");
+                return;
+            }
+
+            sendDataToServer();
+        }
+
+        function closeModal() {
+            document.getElementById("modal-popup").classList.add("hidden");
+        }
+
+        function confirmSubmit() {
+            isForcedSubmit = true;
+            closeModal();
+            sendDataToServer();
+        }
+
+        function sendDataToServer() {
+            const q14Selection = document.querySelector('input[name="q14_selection"]:checked');
+            const formData = {
+                Name: document.getElementById("userName").value.trim(),
+                Gmail: document.getElementById("userGmail").value.trim(),
+                Language: currentLang,
+                Q1_Education: document.getElementById("q1").value,
+                Q2_Status: document.getElementById("q2").value,
+                Q3_Field: document.getElementById("q3").value,
+                Q4_Challenge: document.getElementById("q4").value,
+                Q5_Sufficiency: document.getElementById("q5").value,
+                Q6_Gap: document.getElementById("q6").value,
+                Q7_Confidence: document.getElementById("q7").value,
+                Q8_Importance: document.getElementById("q8").value,
+                Q9_Format: document.getElementById("q9").value,
+                Q10_Time: document.getElementById("q10").value,
+                Q11_Duration: document.getElementById("q11").value,
+                Q12_Investment: document.getElementById("q12").value,
+                Q13_Payment: document.getElementById("q13").value,
+                Q14_Priority: q14Selection ? q14Selection.value : "",
+                Q15_Interest: document.getElementById("q15").value,
+                Q16_Problem: document.getElementById("q16").value
+            };
+
+            fetch('/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(resData => {
+                if(resData.status === 'success') {
+                    document.getElementById("screen-form").classList.add("hidden");
+                    document.getElementById("screen-success").classList.remove("hidden");
+                    const langData = data[currentLang];
+                    document.getElementById("success-msg").innerText = langData.successMain;
+                    document.getElementById("success-sub-msg").innerText = langData.successSub;
+                    document.getElementById("restart-btn-text").innerText = langData.restart;
+                }
+            });
+        }
+
+        function resetSurvey() {
+            document.getElementById("surveyForm").reset();
+            isForcedSubmit = false;
+            document.getElementById("screen-success").classList.add("hidden");
+            document.getElementById("screen-lang").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
