@@ -52,6 +52,7 @@
         <h1>📊 Future & Career Intelligence - Admin Portal</h1>
         <div class="nav-links">
             <a href="/">← Go Back to Survey</a>
+            <a href="#" onclick="clearDatabase()" style="color: #ef4444;">Clear Data 🗑️</a>
             <a href="#" onclick="logoutAdmin()">Logout 🔒</a>
         </div>
     </div>
@@ -152,6 +153,19 @@
                 });
             }
         });
+
+        function clearDatabase() {
+            if(confirm("Do you want to clear all data?")) {
+                fetch('/clear_data', { method: 'POST' })
+                .then(res => {
+                    if(res.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Failed to clear data.");
+                    }
+                });
+            }
+        }
 
         function logoutAdmin() {
             fetch('/logout').then(() => window.location.href = '/admin');

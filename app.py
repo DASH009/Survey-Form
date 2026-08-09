@@ -74,12 +74,11 @@ def get_data():
 
   init_db()
   conn = sqlite3.connect(DB_FILE)
-  conn.row_factory = sqlite3.Row 
+  conn.row_factory = sqlite3.Row
   cursor = conn.cursor()
   cursor.execute("SELECT * FROM responses")
   rows = cursor.fetchall()
   conn.close()
-
 
   formatted_rows = []
   for row in rows:
@@ -106,6 +105,19 @@ def get_data():
     })
 
   return jsonify(formatted_rows)
+
+
+@app.route("/clear_data", methods=["POST"])
+def clear_data():
+  if not session.get("logged_in"):
+    return jsonify({"error": "Unauthorized"}), 401
+
+  conn = sqlite3.connect(DB_FILE)
+  cursor = conn.cursor()
+  cursor.execute("DELETE FROM responses")
+  conn.commit()
+  conn.close()
+  return jsonify({"status": "success"})
 
 
 @app.route("/submit", methods=["POST"])
