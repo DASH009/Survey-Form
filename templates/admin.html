@@ -107,7 +107,7 @@
                 tbody.appendChild(tr);
             });
 
-            // Analytics with Float numbers removed and Labels rotated properly
+            // Analytics with Horizontal Bar layout for clean text rendering
             const chartsContainer = document.getElementById('charts-container');
             for(let i = 1; i <= 15; i++) {
                 const qKey = headers.find(h => h.startsWith(`Q${i}_`));
@@ -131,10 +131,11 @@
                         datasets: [{ data: Object.values(counts), backgroundColor: '#d97706', borderRadius: 2 }]
                     },
                     options: { 
+                        indexAxis: 'y', // Makes charts horizontal so long text labels never overlap or crash
                         responsive: true, 
                         plugins: { legend: { display: false } },
                         scales: {
-                            y: {
+                            x: {
                                 ticks: {
                                     stepSize: 1,
                                     precision: 0,
@@ -142,13 +143,8 @@
                                 },
                                 grid: { color: '#292524' }
                             },
-                            x: {
-                                ticks: { 
-                                    color: '#a8a29e', 
-                                    font: { size: 9 },
-                                    maxRotation: 45,
-                                    minRotation: 30
-                                },
+                            y: {
+                                ticks: { color: '#a8a29e', font: { size: 10 } },
                                 grid: { display: false }
                             }
                         }

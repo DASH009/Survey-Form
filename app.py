@@ -55,8 +55,7 @@ def admin_portal():
 def admin_login():
   data = request.json
   password = data.get("password")
-  # Yahan apna admin password change kar sakta hai
-  if password == "admin123":
+  if password == "jhakaas":
     session["logged_in"] = True
     return jsonify({"status": "success"})
   return jsonify({"status": "error", "message": "Wrong password!"}), 401
@@ -75,13 +74,13 @@ def get_data():
 
   init_db()
   conn = sqlite3.connect(DB_FILE)
-  conn.row_factory = sqlite3.Row  # Column names ke sath data fetch karne ke liye
+  conn.row_factory = sqlite3.Row 
   cursor = conn.cursor()
   cursor.execute("SELECT * FROM responses")
   rows = cursor.fetchall()
   conn.close()
 
-  # Database columns ko frontend/CSV jaisa format dene ke liye mapping
+
   formatted_rows = []
   for row in rows:
     formatted_rows.append({
