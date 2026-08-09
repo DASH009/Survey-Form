@@ -88,6 +88,5 @@ def submit():
 
 if __name__ == "__main__":
   init_csv()
-  # Render ke dynamic port ke liye yeh configuration zaroori hai
   port = int(os.environ.get("PORT", 5000))
   app.run(host="0.0.0.0", port=port)
