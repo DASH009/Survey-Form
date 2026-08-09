@@ -1,9 +1,12 @@
 import csv
 import os
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, session
 
 app = Flask(__name__)
+app.secret_key = "harshit_secret"
+
 DATA_FILE = "survey_responses.csv"
+ADMIN_PASSWORD = "admin123" 
 
 
 def init_csv():
@@ -40,11 +43,32 @@ def index():
 
 @app.route("/admin")
 def admin_portal():
+  # Agar logged in nahi hai, toh login page dikhao, warna dashboard
+  if not session.get("logged_in"):
+    return render_template("admin_login.html")
   return render_template("admin.html")
+
+
+@app.route("/admin_login", methods=["POST"])
+def admin_login():
+  data = request.json
+  password = data.get("password")
+  if password == ADMIN_PASSWORD:
+    session["logged_in"] = True
+    return jsonify({"status": "success"})
+  return jsonify({"status": "error", "message": "Wrong password!"}), 401
+
+
+@app.route("/logout")
+def logout():
+  session.pop("logged_in", None)
+  return jsonify({"status": "success"})
 
 
 @app.route("/get_data")
 def get_data():
+  if not session.get("logged_in"):
+    return jsonify({"error": "Unauthorized"}), 401
   init_csv()
   rows = []
   with open(DATA_FILE, mode="r", encoding="utf-8") as f:
