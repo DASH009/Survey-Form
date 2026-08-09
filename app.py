@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = "harshit_secret"
 
 DATA_FILE = "survey_responses.csv"
-ADMIN_PASSWORD = "admin123" 
+ADMIN_PASSWORD = "jhakaas" 
 
 
 def init_csv():
