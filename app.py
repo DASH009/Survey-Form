@@ -1,39 +1,42 @@
-import csv
 import os
+import sqlite3
 from flask import Flask, jsonify, render_template, request, session
 
 app = Flask(__name__)
-app.secret_key = "harshit_secret"
+app.secret_key = "harshit_super_secret_admin_key"
 
-DATA_FILE = "survey_responses.csv"
-ADMIN_PASSWORD = "jhakaas" 
+DB_FILE = "survey.db"
 
 
-def init_csv():
-  if not os.path.exists(DATA_FILE):
-    with open(DATA_FILE, mode="w", newline="", encoding="utf-8") as f:
-      writer = csv.writer(f)
-      writer.writerow([
-          "Name",
-          "Gmail",
-          "Language",
-          "Q1_Education",
-          "Q2_Status",
-          "Q3_Field",
-          "Q4_Challenge",
-          "Q5_Sufficiency",
-          "Q6_Gap",
-          "Q7_Confidence",
-          "Q8_Importance",
-          "Q9_Format",
-          "Q10_Time",
-          "Q11_Duration",
-          "Q12_Investment",
-          "Q13_Payment",
-          "Q14_Priority",
-          "Q15_Interest",
-          "Q16_Problem",
-      ])
+def init_db():
+  conn = sqlite3.connect(DB_FILE)
+  cursor = conn.cursor()
+  cursor.execute("""
+        CREATE TABLE IF NOT EXISTS responses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            gmail TEXT,
+            language TEXT,
+            q1_education TEXT,
+            q2_status TEXT,
+            q3_field TEXT,
+            q4_challenge TEXT,
+            q5_sufficiency TEXT,
+            q6_gap TEXT,
+            q7_confidence TEXT,
+            q8_importance TEXT,
+            q9_format TEXT,
+            q10_time TEXT,
+            q11_duration TEXT,
+            q12_investment TEXT,
+            q13_payment TEXT,
+            q14_priority TEXT,
+            q15_interest TEXT,
+            q16_problem TEXT
+        )
+    """)
+  conn.commit()
+  conn.close()
 
 
 @app.route("/")
@@ -43,7 +46,6 @@ def index():
 
 @app.route("/admin")
 def admin_portal():
-  # Agar logged in nahi hai, toh login page dikhao, warna dashboard
   if not session.get("logged_in"):
     return render_template("admin_login.html")
   return render_template("admin.html")
@@ -53,7 +55,8 @@ def admin_portal():
 def admin_login():
   data = request.json
   password = data.get("password")
-  if password == ADMIN_PASSWORD:
+  # Yahan apna admin password change kar sakta hai
+  if password == "admin123":
     session["logged_in"] = True
     return jsonify({"status": "success"})
   return jsonify({"status": "error", "message": "Wrong password!"}), 401
@@ -69,48 +72,88 @@ def logout():
 def get_data():
   if not session.get("logged_in"):
     return jsonify({"error": "Unauthorized"}), 401
-  init_csv()
-  rows = []
-  with open(DATA_FILE, mode="r", encoding="utf-8") as f:
-    reader = csv.DictReader(f)
-    for row in reader:
-      rows.append(row)
-  return jsonify(rows)
+
+  init_db()
+  conn = sqlite3.connect(DB_FILE)
+  conn.row_factory = sqlite3.Row  # Column names ke sath data fetch karne ke liye
+  cursor = conn.cursor()
+  cursor.execute("SELECT * FROM responses")
+  rows = cursor.fetchall()
+  conn.close()
+
+  # Database columns ko frontend/CSV jaisa format dene ke liye mapping
+  formatted_rows = []
+  for row in rows:
+    formatted_rows.append({
+        "Name": row["name"],
+        "Gmail": row["gmail"],
+        "Language": row["language"],
+        "Q1_Education": row["q1_education"],
+        "Q2_Status": row["q2_status"],
+        "Q3_Field": row["q3_field"],
+        "Q4_Challenge": row["q4_challenge"],
+        "Q5_Sufficiency": row["q5_sufficiency"],
+        "Q6_Gap": row["q6_gap"],
+        "Q7_Confidence": row["q7_confidence"],
+        "Q8_Importance": row["q8_importance"],
+        "Q9_Format": row["q9_format"],
+        "Q10_Time": row["q10_time"],
+        "Q11_Duration": row["q11_duration"],
+        "Q12_Investment": row["q12_investment"],
+        "Q13_Payment": row["q13_payment"],
+        "Q14_Priority": row["q14_priority"],
+        "Q15_Interest": row["q15_interest"],
+        "Q16_Problem": row["q16_problem"],
+    })
+
+  return jsonify(formatted_rows)
 
 
 @app.route("/submit", methods=["POST"])
 def submit():
   data = request.json
-  init_csv()
+  init_db()
 
-  with open(DATA_FILE, mode="a", newline="", encoding="utf-8") as f:
-    writer = csv.writer(f)
-    writer.writerow([
-        data.get("Name"),
-        data.get("Gmail", "Not Provided"),
-        data.get("Language"),
-        data.get("Q1_Education"),
-        data.get("Q2_Status"),
-        data.get("Q3_Field"),
-        data.get("Q4_Challenge"),
-        data.get("Q5_Sufficiency"),
-        data.get("Q6_Gap"),
-        data.get("Q7_Confidence"),
-        data.get("Q8_Importance"),
-        data.get("Q9_Format"),
-        data.get("Q10_Time"),
-        data.get("Q11_Duration"),
-        data.get("Q12_Investment"),
-        data.get("Q13_Payment"),
-        data.get("Q14_Priority"),
-        data.get("Q15_Interest"),
-        data.get("Q16_Problem", "Not Provided"),
-    ])
+  conn = sqlite3.connect(DB_FILE)
+  cursor = conn.cursor()
+  cursor.execute(
+      """
+        INSERT INTO responses (
+            name, gmail, language, q1_education, q2_status, q3_field, 
+            q4_challenge, q5_sufficiency, q6_gap, q7_confidence, 
+            q8_importance, q9_format, q10_time, q11_duration, 
+            q12_investment, q13_payment, q14_priority, q15_interest, q16_problem
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """,
+      (
+          data.get("Name"),
+          data.get("Gmail", "Not Provided"),
+          data.get("Language"),
+          data.get("Q1_Education"),
+          data.get("Q2_Status"),
+          data.get("Q3_Field"),
+          data.get("Q4_Challenge"),
+          data.get("Q5_Sufficiency"),
+          data.get("Q6_Gap"),
+          data.get("Q7_Confidence"),
+          data.get("Q8_Importance"),
+          data.get("Q9_Format"),
+          data.get("Q10_Time"),
+          data.get("Q11_Duration"),
+          data.get("Q12_Investment"),
+          data.get("Q13_Payment"),
+          data.get("Q14_Priority"),
+          data.get("Q15_Interest"),
+          data.get("Q16_Problem", "Not Provided"),
+      ),
+  )
+  conn.commit()
+  conn.close()
 
-  return jsonify({"status": "success", "message": "Saved successfully!"})
+  return jsonify({"status": "success", "message": "Saved to database successfully!"})
 
 
 if __name__ == "__main__":
-  init_csv()
+  init_db()
   port = int(os.environ.get("PORT", 5000))
   app.run(host="0.0.0.0", port=port)
