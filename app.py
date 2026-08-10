@@ -6,44 +6,49 @@ from flask import Flask, jsonify, render_template, request, session
 app = Flask(__name__)
 app.secret_key = "harshit_super_secret_admin_key"
 
-# Supabase se jo "Session pooling" ya "URI" connection string milegi, woh yahan daalni hai
-# Example: "postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://postgres:Survey_123_45@db.tzcgxnhqcxekjgzwwnmk.supabase.co:5432/postgres")
+# Render ya environment se DATABASE_URL uthayega
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db_connection():
+    if not DATABASE_URL:
+        raise Exception("DATABASE_URL environment variable is not set!")
     conn = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
     return conn
 
 def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS responses (
-            id SERIAL PRIMARY KEY,
-            name TEXT,
-            gmail TEXT,
-            language TEXT,
-            q1_education TEXT,
-            q2_status TEXT,
-            q3_field TEXT,
-            q4_challenge TEXT,
-            q5_sufficiency TEXT,
-            q6_gap TEXT,
-            q7_confidence TEXT,
-            q8_importance TEXT,
-            q9_format TEXT,
-            q10_time TEXT,
-            q11_duration TEXT,
-            q12_investment TEXT,
-            q13_payment TEXT,
-            q14_priority TEXT,
-            q15_interest TEXT,
-            q16_problem TEXT
-        )
-    """)
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS responses (
+                id SERIAL PRIMARY KEY,
+                name TEXT,
+                gmail TEXT,
+                language TEXT,
+                q1_education TEXT,
+                q2_status TEXT,
+                q3_field TEXT,
+                q4_challenge TEXT,
+                q5_sufficiency TEXT,
+                q6_gap TEXT,
+                q7_confidence TEXT,
+                q8_importance TEXT,
+                q9_format TEXT,
+                q10_time TEXT,
+                q11_duration TEXT,
+                q12_investment TEXT,
+                q13_payment TEXT,
+                q14_priority TEXT,
+                q15_interest TEXT,
+                q16_problem TEXT
+            )
+        """)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("Database initialized successfully on Supabase!")
+    except Exception as e:
+        print(f"Database initialization error: {e}")
 
 @app.route("/")
 def index():
@@ -114,13 +119,16 @@ def clear_data():
     if not session.get("logged_in"):
         return jsonify({"error": "Unauthorized"}), 401
     
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM responses")
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"status": "success"})
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM responses")
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/submit", methods=["POST"])
 def submit():
@@ -162,7 +170,7 @@ def submit():
         conn.commit()
         cursor.close()
         conn.close()
-        return jsonify({"status": "success", "message": "Saved to Supabase successfully!"})
+        return jsonify({"status": "success", "message": "Saved successfully!"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
