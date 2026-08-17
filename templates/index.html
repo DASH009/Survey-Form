@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Future & Career Intelligence Initiative</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         #modal-title { color: #ef4444; }
     </style>
@@ -105,6 +106,11 @@
     </div>
 
     <script>
+        // Supabase Configuration (Apni Supabase URL aur Anon/Public Key yahan daal dena)
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let currentLang = 'en';
         let isForcedSubmit = false;
 
@@ -313,46 +319,44 @@
             sendDataToServer();
         }
 
-        function sendDataToServer() {
+        async function sendDataToServer() {
             const q14Selection = document.querySelector('input[name="q14_selection"]:checked');
             const formData = {
-                Name: document.getElementById("userName").value.trim(),
-                Gmail: document.getElementById("userGmail").value.trim(),
-                Language: currentLang,
-                Q1_Education: document.getElementById("q1").value,
-                Q2_Status: document.getElementById("q2").value,
-                Q3_Field: document.getElementById("q3").value,
-                Q4_Challenge: document.getElementById("q4").value,
-                Q5_Sufficiency: document.getElementById("q5").value,
-                Q6_Gap: document.getElementById("q6").value,
-                Q7_Confidence: document.getElementById("q7").value,
-                Q8_Importance: document.getElementById("q8").value,
-                Q9_Format: document.getElementById("q9").value,
-                Q10_Time: document.getElementById("q10").value,
-                Q11_Duration: document.getElementById("q11").value,
-                Q12_Investment: document.getElementById("q12").value,
-                Q13_Payment: document.getElementById("q13").value,
-                Q14_Priority: q14Selection ? q14Selection.value : "",
-                Q15_Interest: document.getElementById("q15").value,
-                Q16_Problem: document.getElementById("q16").value
+                name: document.getElementById("userName").value.trim(),
+                gmail: document.getElementById("userGmail").value.trim() || "Not Provided",
+                language: currentLang,
+                q1_education: document.getElementById("q1").value,
+                q2_status: document.getElementById("q2").value,
+                q3_field: document.getElementById("q3").value,
+                q4_challenge: document.getElementById("q4").value,
+                q5_sufficiency: document.getElementById("q5").value,
+                q6_gap: document.getElementById("q6").value,
+                q7_confidence: document.getElementById("q7").value,
+                q8_importance: document.getElementById("q8").value,
+                q9_format: document.getElementById("q9").value,
+                q10_time: document.getElementById("q10").value,
+                q11_duration: document.getElementById("q11").value,
+                q12_investment: document.getElementById("q12").value,
+                q13_payment: document.getElementById("q13").value,
+                q14_priority: q14Selection ? q14Selection.value : "",
+                q15_interest: document.getElementById("q15").value,
+                q16_problem: document.getElementById("q16").value || "Not Provided"
             };
 
-            fetch('/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-            .then(res => res.json())
-            .then(resData => {
-                if(resData.status === 'success') {
-                    document.getElementById("screen-form").classList.add("hidden");
-                    document.getElementById("screen-success").classList.remove("hidden");
-                    const langData = data[currentLang];
-                    document.getElementById("success-msg").innerText = langData.successMain;
-                    document.getElementById("success-sub-msg").innerText = langData.successSub;
-                    document.getElementById("restart-btn-text").innerText = langData.restart;
-                }
-            });
+            const { error } = await supabaseClient
+                .from('responses')
+                .insert([formData]);
+
+            if (error) {
+                alert("Error saving data: " + error.message);
+            } else {
+                document.getElementById("screen-form").classList.add("hidden");
+                document.getElementById("screen-success").classList.remove("hidden");
+                const langData = data[currentLang];
+                document.getElementById("success-msg").innerText = langData.successMain;
+                document.getElementById("success-sub-msg").innerText = langData.successSub;
+                document.getElementById("restart-btn-text").innerText = langData.restart;
+            }
         }
 
         function resetSurvey() {
