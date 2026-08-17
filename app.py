@@ -6,7 +6,6 @@ from flask import Flask, jsonify, render_template, request, session
 app = Flask(__name__)
 app.secret_key = "harshit_super_secret_admin_key"
 
-# Render ya environment se DATABASE_URL uthayega
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db_connection():
