@@ -108,9 +108,8 @@
     </div>
 
     <script>
-        // Supabase Configuration 
         const SUPABASE_URL = 'https://tzcgxnhqcxekjgzwnmk.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_BI0lxqFDJwtvUZs7dbqJTQ_QW8BHZFW'; //
+        const SUPABASE_ANON_KEY = 'sb_publishable_BI0lxqFDJwtvUZs7dbqJTQ_QW8BHZFW';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentLang = 'en';
@@ -345,19 +344,25 @@
                 q16_problem: document.getElementById("q16").value || "Not Provided"
             };
 
-            const { error } = await supabaseClient
-                .from('responses')
-                .insert([formData]);
+            try {
+                const { error } = await supabaseClient
+                    .from('responses')
+                    .insert([formData]);
 
-            if (error) {
-                alert("Error saving data: " + error.message);
-            } else {
-                document.getElementById("screen-form").classList.add("hidden");
-                document.getElementById("screen-success").classList.remove("hidden");
-                const langData = data[currentLang];
-                document.getElementById("success-msg").innerText = langData.successMain;
-                document.getElementById("success-sub-msg").innerText = langData.successSub;
-                document.getElementById("restart-btn-text").innerText = langData.restart;
+                if (error) {
+                    console.error("Supabase Error Details:", error);
+                    alert("Error saving data: " + error.message);
+                } else {
+                    document.getElementById("screen-form").classList.add("hidden");
+                    document.getElementById("screen-success").classList.remove("hidden");
+                    const langData = data[currentLang];
+                    document.getElementById("success-msg").innerText = langData.successMain;
+                    document.getElementById("success-sub-msg").innerText = langData.successSub;
+                    document.getElementById("restart-btn-text").innerText = langData.restart;
+                }
+            } catch (err) {
+                console.error("Network Exception:", err);
+                alert("Failed to connect. Please check your network connection or ad-blocker.");
             }
         }
 
