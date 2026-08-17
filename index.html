@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Future & Career Intelligence Initiative</title>
+    <!-- Correct relative path for Vercel root deployment -->
+    <link rel="stylesheet" href="static/style.css">
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -106,9 +108,9 @@
     </div>
 
     <script>
-        // Supabase Configuration (Apni Supabase URL aur Anon/Public Key yahan daal dena)
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        // Supabase Configuration 
+        const SUPABASE_URL = 'https://tzcgxnhqcxekjgzwnmk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_...'; // Apni wali Publishable key yahan daal dena
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentLang = 'en';
