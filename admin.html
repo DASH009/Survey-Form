@@ -104,18 +104,32 @@
                 .order('id', { ascending: true });
 
             if (error) {
-                console.error(error);
+                console.error("Supabase Error:", error);
+                alert("Error fetching data: " + error.message);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                document.getElementById('total-count').innerText = "0";
                 return;
             }
 
             document.getElementById('total-count').innerText = data.length;
-            if(data.length === 0) return;
 
+            // Extract headers dynamically from the first record
             const keys = Object.keys(data[0]);
-            const headers = ['name', 'gmail', 'language'];
-            for(let i=1; i<=16; i++) {
-                const found = keys.find(k => k.toLowerCase().startsWith(`q${i}_`));
-                if(found) headers.push(found);
+            let headers = ['id', 'name', 'gmail', 'language'];
+            
+            // Add q1 through q16 dynamically if present
+            keys.forEach(k => {
+                if (!headers.includes(k) && (k.startsWith('q') || k.startsWith('Q'))) {
+                    headers.push(k);
+                }
+            });
+
+            // Fallback if specific keys aren't matched neatly
+            if(headers.length <= 4) {
+                headers = keys;
             }
             
             const headTr = document.getElementById('table-head');
@@ -132,17 +146,18 @@
                 const tr = document.createElement('tr');
                 headers.forEach(h => {
                     const td = document.createElement('td');
-                    td.innerText = row[h] || '-';
+                    td.innerText = row[h] !== undefined && row[h] !== null ? row[h] : '-';
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
             });
 
-            // Analytics with Horizontal Bar layout
+            // Analytics with Horizontal Bar layout for Q1 to Q15
             const chartsContainer = document.getElementById('charts-container');
             chartsContainer.innerHTML = '';
+            
             for(let i = 1; i <= 15; i++) {
-                const qKey = headers.find(h => h.toLowerCase().startsWith(`q${i}_`));
+                const qKey = keys.find(h => h.toLowerCase() === `q${i}` || h.toLowerCase().startsWith(`q${i}_`));
                 if(!qKey) continue;
 
                 const counts = {};
@@ -153,7 +168,7 @@
 
                 const box = document.createElement('div');
                 box.className = 'chart-box';
-                box.innerHTML = `<h3>${qKey.replace(/_/g, ' ').toUpperCase()}</h3><canvas></canvas>`;
+                box.innerHTML = `<h3>${qKey.replace(/_/g, ' ').toUpperCase()}</h3><div style="position: relative; height: 250px;"><canvas></canvas></div>`;
                 chartsContainer.appendChild(box);
 
                 new Chart(box.querySelector('canvas'), {
@@ -165,6 +180,7 @@
                     options: { 
                         indexAxis: 'y',
                         responsive: true, 
+                        maintainAspectRatio: false,
                         plugins: { legend: { display: false } },
                         scales: {
                             x: {
@@ -197,6 +213,7 @@
             window.location.href = '/';
         }
 
+        // Execute data fetch on load
         fetchAdminData();
     </script>
 </body>
