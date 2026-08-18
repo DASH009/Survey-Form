@@ -164,7 +164,7 @@
             <div>
                 <h2 id="app-title">Future & Career Intelligence</h2>
             </div>
-            <button class="theme-toggle" id="themeToggleBtn">🌓 Theme</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
         </div>
 
         <!-- SCREEN 1: LANGUAGE SELECTION -->
@@ -175,11 +175,11 @@
             <p style="font-weight: 500; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary); text-transform: uppercase;">Select your preferred language / भाषा चुनें</p>
             
             <div class="lang-grid">
-                <div class="lang-card" id="lang-en-btn">
+                <div class="lang-card" onclick="setLanguage('en')">
                     <h3>English</h3>
                     <span>Continue in English</span>
                 </div>
-                <div class="lang-card" id="lang-hi-btn">
+                <div class="lang-card" onclick="setLanguage('hi')">
                     <h3>हिंदी</h3>
                     <span>हिंदी में जारी रखें</span>
                 </div>
@@ -195,7 +195,7 @@
                 <p id="survey-desc-alt" style="color: var(--text-secondary); font-size: 14px; margin: 4px 0 0 0; line-height: 1.5;"></p>
             </div>
             
-            <form id="surveyForm">
+            <form id="surveyForm" onsubmit="handleFormSubmit(event)">
                 <div class="form-group">
                     <label id="lbl-name"></label>
                     <input type="text" id="userName" placeholder="Please enter your name" required>
@@ -236,7 +236,7 @@
         <div id="screen-success" class="hidden" style="text-align: center; padding: 30px 0;">
             <h3 id="success-msg" style="font-size: 22px; font-weight: 500; margin-bottom: 12px;"></h3>
             <p id="success-sub-msg" style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 30px;"></p>
-            <button class="action-btn" id="restart-btn-text" style="max-width: 250px; margin: 0 auto;">Start New Survey</button>
+            <button class="action-btn" onclick="resetSurvey()" id="restart-btn-text" style="max-width: 250px; margin: 0 auto;">Start New Survey</button>
         </div>
     </div>
 
@@ -246,16 +246,16 @@
             <h3 id="modal-title"></h3>
             <p id="modal-desc" style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 20px;"></p>
             <div class="modal-buttons">
-                <button class="modal-btn btn-back" id="modal-btn-back">Go Back</button>
-                <button class="modal-btn btn-proceed" id="modal-btn-proceed" style="display:none;">Yes, Submit Anyway</button>
+                <button class="modal-btn btn-back" onclick="closeModal()">Go Back</button>
+                <button class="modal-btn btn-proceed" id="modal-btn-proceed" onclick="confirmSubmit()" style="display:none;">Yes, Submit Anyway</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Yahan apni NAYI Supabase URL aur Anon Key daal dena!
-        const SUPABASE_URL = 'YOUR_NEW_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_NEW_ANON_KEY';
+        // YAHAN APNI ACTUAL SUPABASE URL AUR ANON KEY DAAL:
+        const SUPABASE_URL = 'https://YOUR_ACTUAL_PROJECT_ID.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_ACTUAL_ANON_KEY_HERE';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentLang = 'en';
@@ -340,28 +340,11 @@
             }
         };
 
-        document.addEventListener("DOMContentLoaded", () => {
-            // Theme toggle button
-            document.getElementById("themeToggleBtn").addEventListener("click", () => {
-                const html = document.documentElement;
-                const current = html.getAttribute("data-theme");
-                html.setAttribute("data-theme", current === "dark" ? "light" : "dark");
-            });
-
-            // Language cards
-            document.getElementById("lang-en-btn").addEventListener("click", () => setLanguage('en'));
-            document.getElementById("lang-hi-btn").addEventListener("click", () => setLanguage('hi'));
-
-            // Form submit
-            document.getElementById("surveyForm").addEventListener("submit", handleFormSubmit);
-
-            // Modal buttons
-            document.getElementById("modal-btn-back").addEventListener("click", closeModal);
-            document.getElementById("modal-btn-proceed").addEventListener("click", confirmSubmit);
-
-            // Restart button
-            document.getElementById("restart-btn-text").addEventListener("click", resetSurvey);
-        });
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute("data-theme");
+            html.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+        }
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -432,7 +415,6 @@
             event.preventDefault();
             const name = document.getElementById("userName").value.trim();
             const gmail = document.getElementById("userGmail").value.trim();
-            const problem = document.getElementById("q16").value.trim();
             const langData = data[currentLang];
 
             const proceedBtn = document.getElementById("modal-btn-proceed");
@@ -460,7 +442,7 @@
                 return;
             }
 
-            if (!isForcedSubmit && (!gmail || !problem)) {
+            if (!isForcedSubmit && (!gmail || !document.getElementById("q16").value.trim())) {
                 document.getElementById("modal-title").innerText = langData.optTitle;
                 document.getElementById("modal-desc").innerText = langData.optDesc;
                 backBtn.innerText = langData.backBtn;
