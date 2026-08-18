@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,12 @@
     <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        #modal-title { color: #ef4444; }
+        #modal-title {
+            color: #ef4444;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -25,9 +29,11 @@
         <div id="screen-lang" class="lang-screen">
             <h3 id="intro-main-title">Your thoughts to build a better</h3>
             <p id="intro-sub-title">Your answers are valuable for us. Be the part of changemaker</p>
-            
-            <p style="font-weight: 500; margin-bottom: 15px; font-size: 14px; color: var(--text-secondary); text-transform: uppercase;">Select your preferred language / भाषा चुनें</p>
-            
+
+            <p
+                style="font-weight: 500; margin-bottom: 15px; font-size: 14px; color: var(--text-secondary); text-transform: uppercase;">
+                Select your preferred language / भाषा चुनें</p>
+
             <div class="lang-grid">
                 <div class="lang-card" onclick="setLanguage('en')">
                     <h3>English</h3>
@@ -44,11 +50,14 @@
         <div id="screen-form" class="hidden">
             <div style="margin-bottom: 30px;">
                 <h2 id="form-main-title" style="margin: 0 0 6px 0; font-size: 24px; font-weight: 500;"></h2>
-                <h3 id="form-alt-title" style="margin: 0 0 10px 0; font-size: 16px; color: var(--border-focus); font-weight: 500;"></h3>
-                <p id="survey-desc" style="color: var(--text-secondary); font-size: 15px; margin: 0; line-height: 1.5;"></p>
-                <p id="survey-desc-alt" style="color: var(--text-secondary); font-size: 15px; margin: 4px 0 0 0; line-height: 1.5;"></p>
+                <h3 id="form-alt-title"
+                    style="margin: 0 0 10px 0; font-size: 16px; color: var(--border-focus); font-weight: 500;"></h3>
+                <p id="survey-desc" style="color: var(--text-secondary); font-size: 15px; margin: 0; line-height: 1.5;">
+                </p>
+                <p id="survey-desc-alt"
+                    style="color: var(--text-secondary); font-size: 15px; margin: 4px 0 0 0; line-height: 1.5;"></p>
             </div>
-            
+
             <form id="surveyForm" onsubmit="handleFormSubmit(event)">
                 <div class="form-group">
                     <label id="lbl-name"></label>
@@ -72,15 +81,17 @@
                 <div class="form-group"><label id="q11-label"></label><select id="q11"></select></div>
                 <div class="form-group"><label id="q12-label"></label><select id="q12"></select></div>
                 <div class="form-group"><label id="q13-label"></label><select id="q13"></select></div>
-                
+
                 <!-- Q14 Container converted to Cards -->
                 <div class="form-group">
                     <label id="q14-label"></label>
-                    <div id="q14-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;"></div>
+                    <div id="q14-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+                    </div>
                 </div>
 
                 <div class="form-group"><label id="q15-label"></label><select id="q15"></select></div>
-                <div class="form-group"><label id="q16-label"></label><textarea id="q16" placeholder="Share your thoughts..."></textarea></div>
+                <div class="form-group"><label id="q16-label"></label><textarea id="q16"
+                        placeholder="Share your thoughts..."></textarea></div>
 
                 <button type="submit" class="submit-btn" id="submit-btn-text">Submit Survey</button>
             </form>
@@ -88,9 +99,12 @@
 
         <!-- SCREEN 3: SUCCESS -->
         <div id="screen-success" class="hidden" style="text-align: center; padding: 40px 0;">
-            <h3 id="success-msg" style="color: var(--text-primary); font-size: 24px; font-weight: 500; margin-bottom: 12px;"></h3>
-            <p id="success-sub-msg" style="color: var(--text-secondary); font-size: 16px; line-height: 1.6; margin-bottom: 35px;"></p>
-            <button class="action-btn" onclick="resetSurvey()" id="restart-btn-text" style="max-width: 250px; margin: 0 auto;">Start New Survey</button>
+            <h3 id="success-msg"
+                style="color: var(--text-primary); font-size: 24px; font-weight: 500; margin-bottom: 12px;"></h3>
+            <p id="success-sub-msg"
+                style="color: var(--text-secondary); font-size: 16px; line-height: 1.6; margin-bottom: 35px;"></p>
+            <button class="action-btn" onclick="resetSurvey()" id="restart-btn-text"
+                style="max-width: 250px; margin: 0 auto;">Start New Survey</button>
         </div>
     </div>
 
@@ -98,10 +112,12 @@
     <div id="modal-popup" class="modal-overlay hidden">
         <div class="modal-box">
             <h3 id="modal-title"></h3>
-            <p id="modal-desc" style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 25px;"></p>
+            <p id="modal-desc"
+                style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 25px;"></p>
             <div class="modal-buttons">
                 <button class="modal-btn btn-back" id="modal-btn-back" onclick="closeModal()">Go Back</button>
-                <button class="modal-btn btn-proceed" id="modal-btn-proceed" onclick="confirmSubmit()" style="display:none;">Yes, Submit Anyway</button>
+                <button class="modal-btn btn-proceed" id="modal-btn-proceed" onclick="confirmSubmit()"
+                    style="display:none;">Yes, Submit Anyway</button>
             </div>
         </div>
     </div>
@@ -203,7 +219,7 @@
             currentLang = lang;
             document.getElementById("screen-lang").classList.add("hidden");
             document.getElementById("screen-form").classList.remove("hidden");
-            
+
             const langData = data[lang];
             document.getElementById("app-title").innerText = langData.appTitle;
             document.getElementById("form-main-title").innerText = langData.mainTitle;
@@ -217,16 +233,16 @@
             langData.questions.forEach((q, index) => {
                 const qNum = index + 1;
                 const labelElem = document.getElementById(`q${qNum}-label`);
-                if(labelElem) labelElem.innerText = q.label;
+                if (labelElem) labelElem.innerText = q.label;
 
-                if(qNum === 14) {
+                if (qNum === 14) {
                     const container = document.getElementById(`q14-container`);
-                    if(container && q.options) {
+                    if (container && q.options) {
                         container.innerHTML = "";
                         q.options.forEach((opt) => {
                             const wrapper = document.createElement('label');
                             wrapper.style.cssText = "display: flex; align-items: flex-start; gap: 10px; background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 2px; cursor: pointer; font-size: 14px; line-height: 1.4; color: var(--text-primary); transition: border-color 0.2s;";
-                            
+
                             const radio = document.createElement('input');
                             radio.type = 'radio';
                             radio.name = 'q14_selection';
@@ -245,7 +261,7 @@
                 }
 
                 const selectElem = document.getElementById(`q${qNum}`);
-                if(selectElem && q.options) {
+                if (selectElem && q.options) {
                     selectElem.innerHTML = "";
                     const defaultOpt = document.createElement("option");
                     defaultOpt.value = "";
@@ -278,9 +294,9 @@
             if (!name) missingFields.push(currentLang === 'en' ? "Your Name" : "आपका नाम");
 
             for (let i = 1; i <= 15; i++) {
-                if(i === 14) {
+                if (i === 14) {
                     const q14Val = document.querySelector('input[name="q14_selection"]:checked');
-                    if(!q14Val) missingFields.push(langData.questions[13].label);
+                    if (!q14Val) missingFields.push(langData.questions[13].label);
                     continue;
                 }
                 const val = document.getElementById(`q${i}`).value;
@@ -344,27 +360,35 @@
             };
 
             try {
-                const { error } = await supabaseClient
-                    .from('responses')
-                    .insert([formData]);
+                const response = await fetch('https://tzcgxnhqcxekjgzwnmk.supabase.co/rest/v1/responses', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': 'sb_publishable_BI0lxqFDJwtvUZs7dbqJTQ_QW8BHZFW',
+                        'Authorization': 'Bearer sb_publishable_BI0lxqFDJwtvUZs7dbqJTQ_QW8BHZFW',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-                if (error) {
-                    console.error("Supabase Error Details:", error);
-                    alert("Error saving data: " + error.message);
-                } else {
-                    document.getElementById("screen-form").classList.add("hidden");
-                    document.getElementById("screen-success").classList.remove("hidden");
-                    const langData = data[currentLang];
-                    document.getElementById("success-msg").innerText = langData.successMain;
-                    document.getElementById("success-sub-msg").innerText = langData.successSub;
-                    document.getElementById("restart-btn-text").innerText = langData.restart;
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Failed to insert data');
                 }
+
+                // Success screen show kar do
+                document.getElementById("screen-form").classList.add("hidden");
+                document.getElementById("screen-success").classList.remove("hidden");
+                const langData = data[currentLang];
+                document.getElementById("success-msg").innerText = langData.successMain;
+                document.getElementById("success-sub-msg").innerText = langData.successSub;
+                document.getElementById("restart-btn-text").innerText = langData.restart;
+
             } catch (err) {
-                console.error("Network Exception:", err);
-                alert("Failed to connect. Please check your network connection or ad-blocker.");
+                console.error("Fetch Exception:", err);
+                alert("Error saving data: " + err.message);
             }
         }
-
         function resetSurvey() {
             document.getElementById("surveyForm").reset();
             isForcedSubmit = false;
@@ -373,4 +397,5 @@
         }
     </script>
 </body>
+
 </html>
