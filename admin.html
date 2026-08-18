@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard & Analytics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -78,11 +77,10 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://tzcgxnhqcxekjgzwwnmk.supabase.co';
+        const SUPABASE_URL = 'https://tzcgxnhqcxekjgzwnmk.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_BI0lxqFDJwtvUZs7dbqJTQ_QW8BHZFW';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Simple Password Protection via Prompt for Admin
         function checkAdminAuth() {
             if (localStorage.getItem("admin_logged_in") !== "true") {
                 const pass = prompt("Enter Admin Password:");
@@ -116,18 +114,15 @@
 
             document.getElementById('total-count').innerText = data.length;
 
-            // Extract headers dynamically from the first record
             const keys = Object.keys(data[0]);
             let headers = ['id', 'name', 'gmail', 'language'];
             
-            // Add q1 through q16 dynamically if present
             keys.forEach(k => {
                 if (!headers.includes(k) && (k.startsWith('q') || k.startsWith('Q'))) {
                     headers.push(k);
                 }
             });
 
-            // Fallback if specific keys aren't matched neatly
             if(headers.length <= 4) {
                 headers = keys;
             }
@@ -152,7 +147,6 @@
                 tbody.appendChild(tr);
             });
 
-            // Analytics with Horizontal Bar layout for Q1 to Q15
             const chartsContainer = document.getElementById('charts-container');
             chartsContainer.innerHTML = '';
             
@@ -213,7 +207,6 @@
             window.location.href = '/';
         }
 
-        // Execute data fetch on load
         fetchAdminData();
     </script>
 </body>
