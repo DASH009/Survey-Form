@@ -10,29 +10,33 @@
         :root {
             --bg-color: #0c0a09;
             --card-bg: #141210;
+            --card-hover: #1c1917;
             --text-primary: #f5f5f4;
             --text-secondary: #a8a29e;
             --border-color: #292524;
             --border-focus: #d97706;
+            --accent-glow: #d97706;
             --input-bg: #1c1917;
             --button-bg: #f5f5f4;
             --button-text: #0c0a09;
             --button-hover: #e7e5e4;
-            --shadow: 0 30px 60px rgba(0,0,0,0.6);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
         [data-theme="light"] {
-            --bg-color: #f5f5f4;
+            --bg-color: #fafaf9;
             --card-bg: #ffffff;
+            --card-hover: #f5f5f4;
             --text-primary: #1c1917;
-            --text-secondary: #78716c;
+            --text-secondary: #57534e;
             --border-color: #e7e5e4;
-            --border-focus: #d97706;
-            --input-bg: #fafaf9;
+            --border-focus: #b45309;
+            --accent-glow: #b45309;
+            --input-bg: #f5f5f4;
             --button-bg: #1c1917;
-            --button-text: #f5f5f4;
+            --button-text: #fafaf9;
             --button-hover: #292524;
-            --shadow: 0 20px 40px rgba(0,0,0,0.08);
+            --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
         }
 
         body {
@@ -40,121 +44,219 @@
             background-color: var(--bg-color);
             color: var(--text-primary);
             margin: 0;
-            padding: 20px;
+            padding: 60px 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: background 0.4s ease, color 0.4s ease;
         }
 
         .container {
+            width: 100%;
+            max-width: 700px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 40px;
-            border-radius: 6px;
-            width: 100%;
-            max-width: 650px;
+            padding: 50px;
+            border-radius: 4px;
             box-shadow: var(--shadow);
             box-sizing: border-box;
+            transition: all 0.4s ease;
         }
 
         .header-flex {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
+            padding-bottom: 24px;
         }
 
-        h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -0.02em; }
-        
-        .theme-toggle {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
+        #app-title {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
             color: var(--text-primary);
-            padding: 8px 14px;
-            border-radius: 4px;
+            margin: 0;
+        }
+
+        .theme-toggle {
             cursor: pointer;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            border-radius: 2px;
             font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .theme-toggle:hover {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+
+        .hidden { display: none !important; }
+
+        .lang-screen {
+            text-align: left;
+            padding: 20px 0;
+        }
+
+        .lang-screen h3 {
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .lang-screen p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 40px;
         }
 
         .lang-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 16px;
             margin-top: 20px;
         }
 
         .lang-card {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
-            padding: 25px;
             border-radius: 4px;
+            padding: 30px 24px;
             cursor: pointer;
-            text-align: center;
-            transition: border-color 0.2s, transform 0.2s;
+            transition: all 0.25s ease;
         }
 
         .lang-card:hover {
             border-color: var(--border-focus);
+            background: var(--card-hover);
             transform: translateY(-2px);
         }
 
-        .lang-card h3 { margin: 0 0 8px 0; font-size: 18px; color: var(--text-primary); }
-        .lang-card span { font-size: 13px; color: var(--text-secondary); }
+        .lang-card h3 {
+            margin: 0 0 6px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
-        .form-group { margin-bottom: 22px; }
-        label { display: block; font-size: 13px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
-        
+        .lang-card span {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            letter-spacing: 0.02em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
         input[type="text"], select, textarea {
             width: 100%;
             padding: 14px 16px;
             background: var(--input-bg);
-            border: 1px solid var(--border-color);
             color: var(--text-primary);
-            border-radius: 4px;
-            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            font-size: 15px;
             box-sizing: border-box;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s ease;
         }
 
-        input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--border-focus); }
-        textarea { resize: vertical; min-height: 100px; }
+        input[type="text"]:focus, select:focus, textarea:focus {
+            border-color: var(--border-focus);
+        }
+
+        select option {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        textarea { resize: vertical; height: 110px; }
 
         .submit-btn, .action-btn {
             background: var(--button-bg);
             color: var(--button-text);
             border: none;
-            width: 100%;
             padding: 16px;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 13px;
+            width: 100%;
+            font-size: 14px;
             letter-spacing: 0.05em;
-            border-radius: 4px;
+            text-transform: uppercase;
+            border-radius: 2px;
             cursor: pointer;
+            font-weight: 600;
             margin-top: 10px;
-            transition: background 0.2s;
+            transition: background 0.2s ease;
         }
-        .submit-btn:hover, .action-btn:hover { background: var(--button-hover); }
-
-        .hidden { display: none !important; }
+        .submit-btn:hover, .action-btn:hover {
+            background: var(--button-hover);
+        }
 
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
         .modal-box {
-            background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 6px; max-width: 400px; width: 90%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 4px;
+            width: 90%;
+            max-width: 420px;
+            text-align: left;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
         }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .modal-btn { flex: 1; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px; border: none; }
-        .btn-back { background: var(--input-bg); color: var(--text-primary); border: 1px solid var(--border-color); }
-        .btn-proceed { background: #d97706; color: #fff; }
-        #modal-title { color: #ef4444; margin-top: 0; }
+        .modal-box h3 {
+            margin-top: 0;
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 2px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .btn-back { background: transparent; color: var(--text-primary); }
+        .btn-back:hover { border-color: var(--text-primary); }
+        .btn-proceed { background: var(--button-bg); color: var(--button-text); border: none; }
     </style>
 </head>
 <body>
@@ -169,10 +271,10 @@
 
         <!-- SCREEN 1: LANGUAGE SELECTION -->
         <div id="screen-lang" class="lang-screen">
-            <h3 id="intro-main-title" style="font-size: 22px; font-weight: 500; margin-top: 0;">Your thoughts to build a better future</h3>
-            <p id="intro-sub-title" style="color: var(--text-secondary); font-size: 14px; margin-bottom: 25px;">Your answers are valuable for us. Be a part of the changemaker.</p>
+            <h3 id="intro-main-title">Your thoughts to build a better future</h3>
+            <p id="intro-sub-title">Your answers are valuable for us. Be a part of the changemaker.</p>
             
-            <p style="font-weight: 500; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary); text-transform: uppercase;">Select your preferred language / भाषा चुनें</p>
+            <label style="margin-top: 10px;">Select your preferred language / भाषा चुनें</label>
             
             <div class="lang-grid">
                 <div class="lang-card" onclick="setLanguage('en')">
@@ -188,11 +290,11 @@
 
         <!-- SCREEN 2: SURVEY FORM -->
         <div id="screen-form" class="hidden">
-            <div style="margin-bottom: 25px;">
-                <h2 id="form-main-title" style="margin: 0 0 6px 0; font-size: 22px; font-weight: 500;"></h2>
-                <h3 id="form-alt-title" style="margin: 0 0 10px 0; font-size: 15px; color: var(--border-focus); font-weight: 500;"></h3>
-                <p id="survey-desc" style="color: var(--text-secondary); font-size: 14px; margin: 0; line-height: 1.5;"></p>
-                <p id="survey-desc-alt" style="color: var(--text-secondary); font-size: 14px; margin: 4px 0 0 0; line-height: 1.5;"></p>
+            <div style="margin-bottom: 30px;">
+                <h2 id="form-main-title" style="margin: 0 0 8px 0; font-size: 24px; font-weight: 500;"></h2>
+                <h3 id="form-alt-title" style="margin: 0 0 12px 0; font-size: 16px; color: var(--border-focus); font-weight: 500;"></h3>
+                <p id="survey-desc" style="color: var(--text-secondary); font-size: 15px; margin: 0; line-height: 1.5;"></p>
+                <p id="survey-desc-alt" style="color: var(--text-secondary); font-size: 15px; margin: 6px 0 0 0; line-height: 1.5;"></p>
             </div>
             
             <form id="surveyForm" onsubmit="handleFormSubmit(event)">
@@ -233,9 +335,9 @@
         </div>
 
         <!-- SCREEN 3: SUCCESS -->
-        <div id="screen-success" class="hidden" style="text-align: center; padding: 30px 0;">
-            <h3 id="success-msg" style="font-size: 22px; font-weight: 500; margin-bottom: 12px;"></h3>
-            <p id="success-sub-msg" style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 30px;"></p>
+        <div id="screen-success" class="hidden" style="text-align: center; padding: 40px 0;">
+            <h3 id="success-msg" style="font-size: 24px; font-weight: 500; margin-bottom: 16px;"></h3>
+            <p id="success-sub-msg" style="color: var(--text-secondary); font-size: 16px; line-height: 1.6; margin-bottom: 30px;"></p>
             <button class="action-btn" onclick="resetSurvey()" id="restart-btn-text" style="max-width: 250px; margin: 0 auto;">Start New Survey</button>
         </div>
     </div>
@@ -246,16 +348,15 @@
             <h3 id="modal-title"></h3>
             <p id="modal-desc" style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 20px;"></p>
             <div class="modal-buttons">
-                <button class="modal-btn btn-back" onclick="closeModal()">Go Back</button>
+                <button class="modal-btn btn-back" id="modal-btn-back" onclick="closeModal()">Go Back</button>
                 <button class="modal-btn btn-proceed" id="modal-btn-proceed" onclick="confirmSubmit()" style="display:none;">Yes, Submit Anyway</button>
             </div>
         </div>
     </div>
 
     <script>
-        // YAHAN APNI ACTUAL SUPABASE URL AUR ANON KEY DAAL:
-        const SUPABASE_URL = 'https://YOUR_ACTUAL_PROJECT_ID.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_ACTUAL_ANON_KEY_HERE';
+        const SUPABASE_URL = 'https://tzcgxnhqcxekjgzwnmk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_BI0lxqFDJwtvUZs7dbqJTQ_QW8BHZFW';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentLang = 'en';
@@ -434,20 +535,26 @@
             }
 
             if (missingFields.length > 0) {
-                document.getElementById("modal-title").innerText = langData.missingTitle;
-                document.getElementById("modal-desc").innerText = langData.missingDesc;
-                backBtn.innerText = currentLang === 'en' ? "OK, Let me check" : "ठीक है, देखता हूँ";
-                proceedBtn.style.display = "none";
+                const titleElem = document.getElementById("modal-title");
+                const descElem = document.getElementById("modal-desc");
+                if(titleElem) titleElem.innerText = langData.missingTitle;
+                if(descElem) descElem.innerText = langData.missingDesc;
+                if(backBtn) backBtn.innerText = currentLang === 'en' ? "OK, Let me check" : "ठीक है, देखता हूँ";
+                if(proceedBtn) proceedBtn.style.display = "none";
                 document.getElementById("modal-popup").classList.remove("hidden");
                 return;
             }
 
             if (!isForcedSubmit && (!gmail || !document.getElementById("q16").value.trim())) {
-                document.getElementById("modal-title").innerText = langData.optTitle;
-                document.getElementById("modal-desc").innerText = langData.optDesc;
-                backBtn.innerText = langData.backBtn;
-                proceedBtn.innerText = langData.proceedBtn;
-                proceedBtn.style.display = "block";
+                const titleElem = document.getElementById("modal-title");
+                const descElem = document.getElementById("modal-desc");
+                if(titleElem) titleElem.innerText = langData.optTitle;
+                if(descElem) descElem.innerText = langData.optDesc;
+                if(backBtn) backBtn.innerText = langData.backBtn;
+                if(proceedBtn) {
+                    proceedBtn.innerText = langData.proceedBtn;
+                    proceedBtn.style.display = "block";
+                }
                 document.getElementById("modal-popup").classList.remove("hidden");
                 return;
             }
